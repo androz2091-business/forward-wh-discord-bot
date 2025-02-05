@@ -55,7 +55,10 @@ client.on('messageCreate', async (message) => {
             forwardingWebhook = webhook;
         }
 
-        await forwardingWebhook.send(getMessageOptions(message));
+        await forwardingWebhook.send(getMessageOptions(message)).catch(e => {
+            console.log(forwardingChannel.id);
+            console.error('Failed to send message:', e);
+        });
         await sleep(5000);
     }
 
