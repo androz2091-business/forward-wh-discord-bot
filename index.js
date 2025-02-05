@@ -36,13 +36,18 @@ client.on('messageCreate', async (message) => {
         await webhookClient.send(getMessageOptions(message));
     }
 
+    console.log('Message received:', message.content);
+
     const mainChannel = config.channels.find((ch) => ch.channelId == message.channelId);
     if (!mainChannel) return;
+
+    console.log('Forwarding to:', mainChannel.forwardingTo);
 
     const forwardingChannelsName = mainChannel.forwardingTo;
     const forwardingChannels = client.channels.cache.filter((ch) => ch.type == ChannelType.GuildText && forwardingChannelsName == ch.name);
 
     for (const forwardingChannel of forwardingChannels) {
+        console.log('Forwarding to specific channel:', forwardingChannel.id);
         if (forwardingChannel.type != ChannelType.GuildText) return;
         const webhooks = await forwardingChannel.fetchWebhooks();
         let forwardingWebhook = webhooks.find((wh) => wh.name == 'Forwarding Bot');
