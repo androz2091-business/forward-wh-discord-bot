@@ -44,13 +44,13 @@ client.on('messageCreate', async (message) => {
     console.log('Forwarding to:', mainChannel.forwardingTo);
 
     const forwardingChannelsName = mainChannel.forwardingTo;
-    const forwardingChannels = client.channels.cache.filter((ch) => ch.type == ChannelType.GuildText && forwardingChannelsName == ch.name);
+    const forwardingChannels = client.channels.cache.filter((ch) => ch.isTextBased() && forwardingChannelsName == ch.name);
 
     console.log('Found forwarding channels:', forwardingChannels.size);
 
     for (const forwardingChannel of forwardingChannels.values()) {
         console.log('Forwarding to specific channel:', forwardingChannel.id);
-        if (forwardingChannel.type != ChannelType.GuildText) return;
+        if (!forwardingChannel.isTextBased()) return;
         const webhooks = await forwardingChannel.fetchWebhooks();
         let forwardingWebhook = webhooks.find((wh) => wh.name == 'Forwarding Bot');
         if (!forwardingWebhook) {
