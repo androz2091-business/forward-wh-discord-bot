@@ -46,7 +46,7 @@ client.on('messageCreate', async (message) => {
     const forwardingChannelsName = mainChannel.forwardingTo;
     const forwardingChannels = client.channels.cache.filter((ch) => ch.type == ChannelType.GuildText && forwardingChannelsName == ch.name);
 
-    for (const forwardingChannel of forwardingChannels) {
+    for (const forwardingChannel of forwardingChannels.values()) {
         console.log('Forwarding to specific channel:', forwardingChannel.id);
         if (forwardingChannel.type != ChannelType.GuildText) return;
         const webhooks = await forwardingChannel.fetchWebhooks();
