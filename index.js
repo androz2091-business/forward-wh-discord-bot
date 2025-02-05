@@ -1,4 +1,4 @@
-import { Client, GatewayIntentBits, WebhookClient } from 'discord.js';
+import { ChannelType, Client, GatewayIntentBits, WebhookClient } from 'discord.js';
 import config from './config.json' with { type: "json" };
 
 
@@ -40,10 +40,10 @@ client.on('messageCreate', async (message) => {
     if (!mainChannel) return;
 
     const forwardingChannelsName = mainChannel.forwardingTo;
-    const forwardingChannels = client.channels.cache.filter((ch) => ch.isTextBased() && forwardingChannelsName == ch.name);
+    const forwardingChannels = client.channels.cache.filter((ch) => ch.type == ChannelType.GuildText && forwardingChannelsName == ch.name);
 
     for (const forwardingChannel of forwardingChannels) {
-        if (!forwardingChannel.isTextBased()) return;
+        if (ch.type != ChannelType.GuildText) return;
         const webhooks = await forwardingChannel.fetchWebhooks();
         let forwardingWebhook = webhooks.find((wh) => wh.name == 'Forwarding Bot');
         if (!forwardingWebhook) {
