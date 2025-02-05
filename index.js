@@ -46,6 +46,8 @@ client.on('messageCreate', async (message) => {
     const forwardingChannelsName = mainChannel.forwardingTo;
     const forwardingChannels = client.channels.cache.filter((ch) => ch.type == ChannelType.GuildText && forwardingChannelsName == ch.name);
 
+    console.log('Found forwarding channels:', forwardingChannels.size);
+
     for (const forwardingChannel of forwardingChannels.values()) {
         console.log('Forwarding to specific channel:', forwardingChannel.id);
         if (forwardingChannel.type != ChannelType.GuildText) return;
@@ -60,9 +62,12 @@ client.on('messageCreate', async (message) => {
             forwardingWebhook = webhook;
         }
 
-        await forwardingWebhook.send(getMessageOptions(message)).catch(e => {
-            console.log(forwardingChannel.id);
-            console.error('Failed to send message:', e);
+        await forwardingWebhook.send(getMessageOptions(message))
+        .then(() => {
+            console.log('Message sent successfully to: ' + forwardingChannel.id);
+        })
+        .catch(e => {
+            console.error('Failed to send message to: ' + forwardingChannel.id, e);
         });
         await sleep(5000);
     }
