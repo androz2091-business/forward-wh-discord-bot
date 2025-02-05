@@ -43,7 +43,7 @@ client.on('messageCreate', async (message) => {
     const forwardingChannels = client.channels.cache.filter((ch) => ch.type == ChannelType.GuildText && forwardingChannelsName == ch.name);
 
     for (const forwardingChannel of forwardingChannels) {
-        if (ch.type != ChannelType.GuildText) return;
+        if (forwardingChannel.type != ChannelType.GuildText) return;
         const webhooks = await forwardingChannel.fetchWebhooks();
         let forwardingWebhook = webhooks.find((wh) => wh.name == 'Forwarding Bot');
         if (!forwardingWebhook) {
