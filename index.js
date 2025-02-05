@@ -1,4 +1,4 @@
-import { Client, GatewayIntentBits, TextChannel } from 'discord.js';
+import { Client, GatewayIntentBits, WebhookClient } from 'discord.js';
 import config from './config.json' with { type: "json" };
 
 
@@ -32,8 +32,8 @@ client.on('messageCreate', async (message) => {
 
     if (message.channelId == config.continuousForwardingChannelId) {
         const webhookUrl = config.continousForwardingWebhookUrl;
-        const webhook = await client.fetchWebhook(webhookUrl);
-        await webhook.send(getMessageOptions(message));
+        const webhookClient = new WebhookClient({ url: webhookUrl });
+        await webhookClient.send(getMessageOptions(message));
     }
 
     const mainChannel = config.channels.find((ch) => ch.channelId == message.channelId);
