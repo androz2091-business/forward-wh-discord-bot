@@ -10,9 +10,31 @@ const client = new Client({
     ]
 });
 
-client.on('messageCreate', (message) => {
+const getMessageOptions = (message) => {
+    const messageContent = message.content;
+    const messageAttachments = message.attachments.map((attachment) => attachment.url);
+
+    const options = {
+        username: message.author.displayName,
+        avatarURL: message.author.displayAvatarURL(),
+        content: messageContent,
+        files: messageAttachments
+    };
+
+    return options;
+}
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+client.on('messageCreate', async (message) => {
 
     if (message.author.bot) return;
+
+    if (message.channelId == config.continuousForwardingChannelId) {
+        const webhookUrl = config.continousForwardingWebhookUrl;
+        const webhook = await client.fetchWebhook(webhookUrl);
+        await webhook.send(getMessageOptions(message));
+    }
 
     const mainChannel = config.channels.find((ch) => ch.channelId == message.channelId);
     if (!mainChannel) return;
@@ -20,7 +42,7 @@ client.on('messageCreate', (message) => {
     const forwardingChannelsName = mainChannel.forwardingTo;
     const forwardingChannels = client.channels.cache.filter((ch) => ch.isTextBased() && forwardingChannelsName == ch.name);
 
-    forwardingChannels.forEach(async (forwardingChannel) => {
+    for (const forwardingChannel of forwardingChannels) {
         if (!forwardingChannel.isTextBased()) return;
         const webhooks = await forwardingChannel.fetchWebhooks();
         let forwardingWebhook = webhooks.find((wh) => wh.name == 'Forwarding Bot');
@@ -33,18 +55,9 @@ client.on('messageCreate', (message) => {
             forwardingWebhook = webhook;
         }
 
-        const messageContent = message.content;
-        const messageAttachments = message.attachments.map((attachment) => attachment.url);
-
-        const options = {
-            username: message.author.displayName,
-            avatarURL: message.author.displayAvatarURL(),
-            content: messageContent,
-            files: messageAttachments
-        };
-
-        await forwardingWebhook.send(options);
-    });
+        await forwardingWebhook.send(getMessageOptions(message));
+        await sleep(5000);
+    }
 
 });
 

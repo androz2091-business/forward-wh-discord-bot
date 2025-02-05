@@ -1,5 +1,7 @@
 {
     "token": "",
+    "continuousForwardingChannelId": "",
+    "continousForwardingWebhookUrl": "",
     "channels": [
         {
             "_name": "from broadcast to ask questions",
