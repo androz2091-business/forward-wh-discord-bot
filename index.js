@@ -38,13 +38,13 @@ client.on('messageCreate', async (message) => {
 
     console.log('Message received:', message.content);
 
-    const mainChannel = config.channels.find((ch) => ch.channelId == message.channelId);
-    if (!mainChannel) return;
+    const matchingChannels = config.channels.filter((ch) => ch.channelId == message.channelId);
+    if (matchingChannels.length === 0) return;
 
-    console.log('Forwarding to:', mainChannel.forwardingTo);
+    console.log('Forwarding to:', matchingChannels.map(ch => ch.forwardingTo).join(', '));
 
-    const forwardingChannelsName = mainChannel.forwardingTo;
-    const forwardingChannels = client.channels.cache.filter((ch) => ch.isTextBased() && forwardingChannelsName == ch.name);
+    const forwardingChannelNames = matchingChannels.map(ch => ch.forwardingTo);
+    const forwardingChannels = client.channels.cache.filter((ch) => ch.isTextBased() && forwardingChannelNames.includes(ch.name));
 
     console.log('Found forwarding channels:', forwardingChannels.size);
 
