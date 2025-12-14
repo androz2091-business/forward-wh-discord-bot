@@ -44,7 +44,7 @@ client.on('messageCreate', async (message) => {
     console.log('Forwarding to:', matchingChannels.map(ch => ch.forwardingTo).join(', '));
 
     const forwardingChannelNames = matchingChannels.map(ch => ch.forwardingTo);
-    const forwardingChannels = client.channels.cache.filter((ch) => ch.isTextBased() && forwardingChannelNames.includes(ch.name));
+    const forwardingChannels = client.channels.cache.filter((ch) => ch.isTextBased() && forwardingChannelNames.some(suffix => ch.name.endsWith(suffix)));
 
     console.log('Channels to forward to:', forwardingChannels.map(ch => ch.id).join(', '));
 
