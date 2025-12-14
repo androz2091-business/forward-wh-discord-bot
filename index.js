@@ -46,6 +46,8 @@ client.on('messageCreate', async (message) => {
     const forwardingChannelNames = matchingChannels.map(ch => ch.forwardingTo);
     const forwardingChannels = client.channels.cache.filter((ch) => ch.isTextBased() && forwardingChannelNames.includes(ch.name));
 
+    console.log('Channels to forward to:', forwardingChannels.map(ch => ch.id).join(', '));
+
     console.log('Found forwarding channels:', forwardingChannels.size);
 
     for (const forwardingChannel of forwardingChannels.values()) {
